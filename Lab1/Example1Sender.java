@@ -1,4 +1,4 @@
-package DC.Lab1;
+package mtu_distributed_computing.Lab1;
 import java.net.*;
 import java.io.*;
 

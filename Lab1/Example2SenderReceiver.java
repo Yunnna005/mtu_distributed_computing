@@ -1,6 +1,8 @@
-package ../Lab1;
+package mtu_distributed_computing.Lab1;
+
 import java.net.InetAddress;
 import java.util.Scanner;
+
 
 public class Example2SenderReceiver {
     public static void main(String[] args) {
