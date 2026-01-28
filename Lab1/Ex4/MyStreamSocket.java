@@ -40,13 +40,13 @@ public class MyStreamSocket extends Socket {
         // be written to the socket data stream before the
         // socket is closed.
         output.flush();
-    } // end sendMessage
+    } 
         
     public String receiveMessage( ) throws IOException {
         // read a line from the data stream
         String message = input.readLine( );
         return message;
-    } //end receiveMessage
+    } 
         
     public void close( ) throws IOException {
         socket.close( );
