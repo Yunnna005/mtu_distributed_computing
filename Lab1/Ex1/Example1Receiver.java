@@ -1,6 +1,5 @@
 package mtu_distributed_computing.Lab1.Ex1;
 import java.net.*;
-import java.io.*;
 
 public class Example1Receiver {
 

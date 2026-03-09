@@ -1,7 +1,6 @@
 package client;
 
 import java.io.*;
-import java.net.*;
 import javax.net.ssl.*;
 public class SslSocketClient {
    public static void main(String[] args) {

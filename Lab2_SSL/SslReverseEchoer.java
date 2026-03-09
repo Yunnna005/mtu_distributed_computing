@@ -7,7 +7,6 @@
  keytool.exe" -genkeypair -v -keystore herong.jks -alias JKS
  */
 import java.io.*;
-import java.net.*;
 import java.security.*;
 import javax.net.ssl.*;
 public class SslReverseEchoer {
