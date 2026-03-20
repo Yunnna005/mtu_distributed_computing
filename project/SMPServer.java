@@ -2,7 +2,7 @@ import java.net.*;
 import java.util.*;
 
 public class SMPServer {
-    private static List<String> messages = new ArrayList<>();
+    private static List<String> messages = new ArrayList<String>();
 
     public static void main(String[] args) {
         int serverPort = 7;

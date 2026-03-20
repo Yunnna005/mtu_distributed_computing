@@ -9,13 +9,15 @@ public class SMPClient {
             System.out.println("Welcome to Client.\n \"What is the name of the server host?");
 
             String hostName = br.readLine();
-            if (hostName.length() == 0) 
-            hostName = "localhost";
+            if (hostName.length() == 0){
+                hostName = "localhost";
+            } 
 
             System.out.println("What is the port number of the server host?");
             String portNum = br.readLine();
-            if (portNum.length() == 0)
+            if (portNum.length() == 0){
                 portNum = "7";
+            }
 
             Socket socket = new Socket(hostName, Integer.parseInt(portNum));
 
