@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.*;
 
-public class SMPClient {
+public class Client {
     public static void main(String[] args) {
         InputStreamReader is = new InputStreamReader(System.in);
         BufferedReader br = new BufferedReader(is);

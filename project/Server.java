@@ -1,5 +1,4 @@
 import java.io.FileInputStream;
-import java.net.*;
 import java.security.KeyStore;
 import java.util.*;
 
@@ -9,7 +8,7 @@ import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocket;
 
-public class SMPServer {
+public class Server {
 
     static ArrayList<String> messageStored = new ArrayList<String>();
 
@@ -41,7 +40,7 @@ public class SMPServer {
                 SSLSocket clientSocket = (SSLSocket) myConnectionSocket.accept();
                 System.out.println("Client connected: " + clientSocket.getInetAddress().getHostAddress());
                 MyStreamSocket myStreamSocket = new MyStreamSocket(clientSocket);
-                Thread clientThread = new Thread(new SMPServerThread(myStreamSocket));
+                Thread clientThread = new Thread(new ServerThread(myStreamSocket));
                 clientThread.start();
             }
         } catch (Exception ex) {
@@ -54,7 +53,7 @@ public class SMPServer {
         messageStored.add(message);
     }
 
-    public static synchronized List<String> getAllMessages() {
+    public static synchronized ArrayList<String> getAllMessages() {
         return new ArrayList<String>(messageStored);
     }
 
