@@ -40,6 +40,10 @@ public class MyStreamSocket {
         return message;
     }
     
+    public java.net.InetAddress getInetAddress() {
+        return socket.getInetAddress();
+    }
+
     public void close() throws IOException {
         socket.close();
     }

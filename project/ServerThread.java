@@ -1,7 +1,5 @@
 import java.io.*;
-import java.net.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ServerThread implements Runnable {
     MyStreamSocket myStreamSocket;

@@ -18,7 +18,7 @@ public class Server {
             serverPort = Integer.parseInt(args[0]); 
         }
 
-        String keystoreName = "serverkeystore.jks";
+        String keystoreName = "server_keystore.jks";
         String keystorePassword = "password";
         String keyPassword = "password";
 
