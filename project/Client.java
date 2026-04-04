@@ -1,5 +1,21 @@
 import java.io.*;
 
+/**
+* This class holds the presentation for the SMP client. 
+* It shows a menu to the user and receives the user's input via the command line. 
+* When the user selects an option, it will call the corresponding method of ClientHelper 
+* to perform the communication through the network. 
+* 
+* The client can be started with the specified location of the truststore on the command line so that 
+* the SSL-connection could check the server's certificate. The command is:
+*   java -Djavax.net.ssl.trustStore=client_truststore.jks -Djavax.net.ssl.trustStorePassword=password Client
+* 
+* References:
+* M. L. Liu, EchoClient2.java, class materials
+* Lab 2 SSL 2023, class materials
+* 
+**/
+
 public class Client {
     public static void main(String[] args) {
         InputStreamReader inputReader = new InputStreamReader(System.in);
@@ -20,6 +36,7 @@ public class Client {
                 portNum = "7";
             }
 
+            // Create the client helper which sets the SSL connection
             ClientHelper helper = new ClientHelper(hostName, portNum);
             System.out.println("Connected to server at " + hostName + ":" + portNum);
             
@@ -36,6 +53,7 @@ public class Client {
                 System.out.println("Please enter your password:");
                 String password = bufferReader.readLine();
 
+                // Send the login request to the server and get the response
                 String response = helper.login(username, password);
                 System.out.println("Server response: " + response);
 

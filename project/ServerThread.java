@@ -1,17 +1,55 @@
 import java.io.*;
 import java.util.ArrayList;
 
+/**
+* The ServerThread Class - Manages one client interaction for the SMP server.
+*
+* Since this class implements Runnable, we can use this class to create threads of execution.
+* Everytime a client logs into the SMP server, the server will start a new ServerThread to manage the communication with that client. 
+* This is the exact same approach taken in the EchoServerThread.java class material example.
+*
+* The run() method has the main processing loop of the application. It is where each protocol message received from the client is parsed and processed based upon the SMP protocol. 
+* Then, an SMP protocol Response code is returned to the client as part of the response.
+*
+* SMP Protocol Messages (server side) :
+* 100 username password : Client wants to login.
+* 200 message_text: Client wants to upload a message. 
+* 300: Client wants all messages.
+* 350 index: Client wants to download a message. 
+* 400: Client wants to logout. 
+* SMP Protocol Response Codes:
+* 101 Login was Successful.
+* 102 Login Failed. 
+* 201 Message Upload was Successful. 
+* 202 Message Upload Failed. 
+* 301 message_count (followed by messages(one per line, followed by END)) 
+* 302 No messages are available. 
+* 351 message_text: Single message requested by client. 
+* 352 Invalid message Index. 
+* 401 Logout was Successful. 
+* 500 Unrecognized Command. 
+*
+* I have chosen Numeric Code responses because it is the way most Real Protocols communicate. 
+* For instance, HTTP has 200 for Success, 404 for Not Found. In addition, FTP communicates using Three Digit Codes, because it is easy to send the response back to the client.
+* I classified the codes by groups: 1xx = Login, 2xx = Uploads, 3xx = Downloads, 4xx = Logout and 5xx = Errors.
+*
+* References:
+* M. L. Liu, EchoServerThread.java, class materials
+*/
+
 public class ServerThread implements Runnable {
     MyStreamSocket myStreamSocket;
     String clientUsername;
     boolean loggedIn;
 
+    // Constructor takes the socket connected to the client
     public ServerThread(MyStreamSocket socket) {
         this.myStreamSocket = socket;
         this.clientUsername = "";
         this.loggedIn = false;
     }
 
+    // Main loop for handling client messages
     public void run() {
         boolean done = false;
         String message;
@@ -27,25 +65,31 @@ public class ServerThread implements Runnable {
 
                 System.out.println("Received from client: " + message);
 
+                // Split the message into command and arguments
                 String[] parts = message.split(" ", 2);
                 String code = parts[0];
-                
-                if (code.equals("100")){
-                    handleLogin(parts);
-                }else if(code.equals("200")){
-                    handleUpload(parts);
-                }else if (code.equals("300")) {
-                    handleDownloadAll();
-                }
-                else if (code.equals("350")) {
-                    handleDownloadOne(parts);
-                }
-                else if (code.equals("400")) {
-                    handleLogoff();
-                    done = true;
-                }else{
-                    myStreamSocket.sendMessage("500 Unknown command");
-                    System.out.println("Unknown command received: " + code); 
+
+                switch (code) {
+                    case "100":
+                        handleLogin(parts);
+                        break;
+                    case "200":
+                        handleUpload(parts);
+                        break;
+                    case "300":
+                        handleDownloadAll();
+                        break;
+                    case "350":
+                        handleDownloadOne(parts);
+                        break;
+                    case "400":
+                        handleLogoff();
+                        done = true;
+                        break;
+                    default:
+                        myStreamSocket.sendMessage("500 Unknown command");
+                        System.out.println("Unknown command received: " + code);
+                        break;
                 }
             }
         } catch (IOException ex) {
@@ -74,6 +118,7 @@ public class ServerThread implements Runnable {
             return;
         }
 
+        // Trim whitespace from username and password
         String username = credentials[0].trim();
         String password = credentials[1].trim();
 
@@ -102,6 +147,7 @@ public class ServerThread implements Runnable {
          return;
       }
 
+      // Trim whitespace from the message text
       String messageText = parts[1].trim();
 
       String storedMessage = clientUsername + ": " + messageText;
