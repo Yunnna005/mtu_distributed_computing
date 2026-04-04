@@ -41,6 +41,7 @@ public class Client {
             System.out.println("Connected to server at " + hostName + ":" + portNum);
             
             boolean loggedIn = false;
+            boolean showMenu = false;
             while(!loggedIn){
                 System.out.println("LOGIN\nPlease enter your username:");
                 String username = bufferReader.readLine();
@@ -59,6 +60,7 @@ public class Client {
 
                 if (response.startsWith("101")) {
                     loggedIn = true;
+                    showMenu = true;
                     System.out.println("Welcome, " + username + "!");
                 }
                 else {
@@ -66,8 +68,7 @@ public class Client {
                 }
                 System.out.println("");
                     
-                boolean done = false;
-                while (!done) {
+                while (showMenu) {
                     System.out.println("MENU");
                     System.out.println("1. Upload a message");
                     System.out.println("2. Download all messages");
@@ -102,7 +103,7 @@ public class Client {
                             String indexStr = bufferReader.readLine();
                             try {
                                 int index = Integer.parseInt(indexStr.trim());
-                                String response3 = helper.downloadOne(index);
+                                String response3 = helper.downloashowMenu(index);
                                 System.out.println("Server response: " + response3);
                             }
                             catch (NumberFormatException ex) {
@@ -114,7 +115,7 @@ public class Client {
                             String response4 = helper.logoff();
                             System.out.println("Server response: " + response4);
                             System.out.println("Goodbye.");
-                            done = true;
+                            showMenu = false;
                             break;
                     
                         default:
