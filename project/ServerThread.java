@@ -57,6 +57,8 @@ public class ServerThread implements Runnable {
         try{
             while(!done){
                 message = myStreamSocket.receiveMessage();
+
+                //If the client disconnects without sending ".", the original would throw an exception.
                 if(message == null) {
                     System.out.println("Client disconnected: " + myStreamSocket.getInetAddress().getHostAddress());
                     done = true;
@@ -65,7 +67,7 @@ public class ServerThread implements Runnable {
 
                 System.out.println("Received from client: " + message);
 
-                // Split the message into command and arguments
+                //The code splits the message to extract the command code and uses a switch statement to route to handler methods.
                 String[] parts = message.split(" ", 2);
                 String code = parts[0];
 
@@ -82,6 +84,7 @@ public class ServerThread implements Runnable {
                     case "350":
                         handleDownloadOne(parts);
                         break;
+                    //The code ends session when SMP code 400 is received.
                     case "400":
                         handleLogoff();
                         done = true;
@@ -95,6 +98,8 @@ public class ServerThread implements Runnable {
         } catch (IOException ex) {
             System.out.println("Error in communication with client: " + ex.getMessage());
             ex.printStackTrace();
+
+        //The code uses a finally block to ensure the socket is always closed, even if an exception occurs.
         } finally {
             try {
                 myStreamSocket.close();
@@ -103,7 +108,8 @@ public class ServerThread implements Runnable {
             }
         }
     }
-
+    //All five handler methods below are SMP protocol logic. 
+    //Each method checks for valid input, checks if the client is logged in (if required), and sends appropriate response codes back to the client.
     private void handleLogin(String[] parts) throws IOException {
         if (parts.length < 2) {
             myStreamSocket.sendMessage("102 Login failed, missing credentials");
@@ -134,6 +140,7 @@ public class ServerThread implements Runnable {
         System.out.println("User logged in: " + username);
     }
 
+    //The handleUpload method checks if the client is logged in and if the message text is valid. If so, it adds the message to the shared message list with the username as a prefix.
     private void handleUpload(String[] parts) throws IOException {
       if (!loggedIn) {
          myStreamSocket.sendMessage("202 Upload failed, please log in");
@@ -157,6 +164,7 @@ public class ServerThread implements Runnable {
       System.out.println("Message uploaded by " + clientUsername);
    }
 
+   //The handleDownloadAll method checks if the client is logged in and if there are messages available. If so, it sends the message count followed by each message on a new line, ending with "END".
    private void handleDownloadAll() throws IOException {
       if (!loggedIn) {
          myStreamSocket.sendMessage("302 Download failed. Please log in");
@@ -180,7 +188,7 @@ public class ServerThread implements Runnable {
       myStreamSocket.sendMessage("END");
       System.out.println("Sent " + messages.size() + " messages to " + clientUsername);
    }
-
+//The handleDownloadOne method checks if the client is logged in, if an index was provided, and if the index is valid. If so, it sends the requested message back to the client.
    private void handleDownloadOne(String[] parts) throws IOException {
       if (!loggedIn) {
          myStreamSocket.sendMessage("352 Download failed. Please log in");
@@ -215,7 +223,7 @@ public class ServerThread implements Runnable {
       myStreamSocket.sendMessage("351 " + message);
       System.out.println("Sent message " + index + " to " + clientUsername);
    }
-
+//The handleLogoff method sends a logoff success message to the client, updates the loggedIn status, and clears the username.
    private void handleLogoff() throws IOException {
       myStreamSocket.sendMessage("401 Logoff successful");
       System.out.println("User logged off: " + clientUsername);

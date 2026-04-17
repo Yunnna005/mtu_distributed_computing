@@ -20,7 +20,8 @@ import java.io.*;
 public class ClientHelper {
     MyStreamSocket mySocket;
 
-    //Constructor to create an SSL connection to the server
+    //The constructor implements a SSL connection using SSLSocketFactory and SSLSocket from the Lab 2 SSL materials.
+    //The trust store is passed via command-line system properties.
     public ClientHelper(String hostName, String portNum) throws Exception {
         int serverPort = Integer.parseInt(portNum);
 
@@ -38,6 +39,10 @@ public class ClientHelper {
         mySocket = new MyStreamSocket(sslSocket);
     }
 
+    //The code has five SMP protocol methods below. Each method builds the protocol message, sends it using
+    //mySocket.sendMessage(), and reads the response using mySocket.receiveMessage(). The sendMessage and receiveMessage
+    //pattern is the same as EchoClientHelper2.getEcho().
+    //Sends SMP code 100 with username and password.
     public String login(String username, String password) throws IOException {
         String request = "100 " + username + " " + password;
         mySocket.sendMessage(request);
@@ -46,6 +51,7 @@ public class ClientHelper {
         return response;
     }
 
+    //Sends SMP code 200 with the message text.
     public String uploadMessage(String messageText) throws IOException{
         String request = "200 " + messageText;
         mySocket.sendMessage(request);
@@ -54,6 +60,7 @@ public class ClientHelper {
         return response;
     }
 
+    //Sends SMP code 300. If the server responds with 301, it reads multiple lines until "END" is received.
     public String downloadAll() throws IOException {
         mySocket.sendMessage("300");
  
@@ -76,6 +83,7 @@ public class ClientHelper {
         return response; 
     }
 
+    //Sends SMP code 350 with the message index. The server will respond with the message at that index, or an error code if the index is invalid.
     public String downloadOne(int index) throws IOException{
         String request = "350 " + index;
         mySocket.sendMessage(request);
@@ -84,6 +92,7 @@ public class ClientHelper {
         return response;
     }
 
+    //My code sends SMP code 400, reads the server response, then closes the socket.
     public String logoff() throws IOException{
         mySocket.sendMessage("400");
     

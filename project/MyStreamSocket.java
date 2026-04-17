@@ -54,6 +54,7 @@ public class MyStreamSocket {
         return message;
     }
     
+    //This method prints the client's IP address when a client connects or disconnects.
     public java.net.InetAddress getInetAddress() {
         return socket.getInetAddress();
     }

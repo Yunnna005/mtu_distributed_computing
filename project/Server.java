@@ -28,6 +28,7 @@ import javax.net.ssl.SSLSocket;
 
 public class Server {
 
+    //The ArrayList added to hold all uploaded messages in memory.
     static ArrayList<String> messageStored = new ArrayList<String>();
 
     public static void main(String[] args) {
@@ -36,13 +37,16 @@ public class Server {
             serverPort = Integer.parseInt(args[0]); 
         }
 
+        //This keystore configuration is based on SslReverseEchoer.java
+        //from Lab 2, which loads a JKS keystore with hardcoded passwords.
         String keystoreName = "server_keystore.jks";
         String keystorePassword = "password";
         String keyPassword = "password";
 
         try {
 
-            // Load the keystore and initialize the SSL context
+            //My code implements SSL server socket. The keystore loading, KeyManagerFactory, and SSLContext setup
+            //are based on SslReverseEchoer.java from Lab 2 materials.
             KeyStore keyStore = KeyStore.getInstance("JKS");
             keyStore.load(new FileInputStream(keystoreName), keystorePassword.toCharArray());
             
@@ -71,6 +75,8 @@ public class Server {
         }
     }
 
+    //Four synchronized methods were added so that multiple ServerThread instances can safely read and write to the
+    //shared messageStored ArrayList without data corruption.
     public static synchronized void addMessage(String message) {
         messageStored.add(message);
     }

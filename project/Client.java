@@ -23,7 +23,7 @@ public class Client {
 
         try {
 
-            System.out.println("Welcome to Client.\n \"What is the name of the server host?");
+            System.out.println("Welcome to Client.\nWhat is the name of the server host?");
             String hostName = bufferReader.readLine();
 
             if (hostName.length() == 0){
@@ -40,6 +40,8 @@ public class Client {
             ClientHelper helper = new ClientHelper(hostName, portNum);
             System.out.println("Connected to server at " + hostName + ":" + portNum);
             
+            //My code adds a login loop that keeps asking for credentials until the server accepts them (code 101).
+            //The user can type "exit" instead of a username to quit.
             boolean loggedIn = false;
             boolean showMenu = false;
             while(!loggedIn){
@@ -67,7 +69,10 @@ public class Client {
                     System.out.println("Login failed. Please try again.");
                 }
                 System.out.println("");
-                    
+
+                //My code implements a menu-driven loop that gives the user four choices: upload, download all, download one, and logoff.
+                //Each choice calls a different method in ClientHelper. The loop ends when the user chooses option 4 (logoff),
+                //which sets showMenu to false.  
                 while (showMenu) {
                     System.out.println("MENU");
                     System.out.println("1. Upload a message");
@@ -79,6 +84,8 @@ public class Client {
                     String choice = bufferReader.readLine();
 
                     switch (choice) {
+                        //Reads a message from the user and sends it to the server using the SMP protocol code 200. 
+                        //The server will respond with a message that starts with 201 if the upload is successful, or an error code if it fails.
                         case "1":
                             System.out.println("Enter the message to upload:");
                             String messageText = bufferReader.readLine();
@@ -92,18 +99,20 @@ public class Client {
                             }
                             break;
                             
+                        //Requests all stored messages from the server using the SMP protocol code 300. 
                         case "2":
                             String response2 = helper.downloadAll();
                             System.out.println("Server response:");
                             System.out.println(response2);
                             break;
 
+                        //Asks for an index and requests that specific message using the SMP protocol code 350.
                         case "3":
                             System.out.println("Enter the message index number:");
                             String indexStr = bufferReader.readLine();
                             try {
                                 int index = Integer.parseInt(indexStr.trim());
-                                String response3 = helper.downloashowMenu(index);
+                                String response3 = helper.downloadOne(index);
                                 System.out.println("Server response: " + response3);
                             }
                             catch (NumberFormatException ex) {
@@ -111,6 +120,7 @@ public class Client {
                             }
                             
                             break;
+                        //The code sends the SMP logoff command (code 400) through helper.logoff() and sets showMenu to false to exit the loop.
                         case "4":
                             String response4 = helper.logoff();
                             System.out.println("Server response: " + response4);
@@ -118,6 +128,7 @@ public class Client {
                             showMenu = false;
                             break;
                     
+                        //The code checks for invalid menu choices. If the user enters something other than 1, 2, 3, or 4, it will print an error message and show the menu again.
                         default:
                             System.out.println("Invalid choice. Please enter a number between 1 and 4.");
                             break;
